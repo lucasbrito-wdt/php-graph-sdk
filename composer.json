@@ -4,11 +4,6 @@
     "keywords": ["facebook", "sdk"],
     "type": "library",
     "homepage": "https://github.com/facebook/php-graph-sdk",
-    "authors": [
-        {
-            "name": "Facebook",
-        }
-    ],
     "require": {
         "php": ">=5.4.0"
     },
