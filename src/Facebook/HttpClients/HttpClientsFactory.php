@@ -76,7 +76,19 @@ class HttpClientsFactory
             return new FacebookGuzzleHttpClient();
         }
 
-        throw new InvalidArgumentException('The http client handler must be set to "curl", "stream", "guzzle", be an instance of GuzzleHttp\Client or an instance of Facebook\HttpClients\FacebookHttpClientInterface');
+        if ('laravel_http' === $handler && !class_exists('Illuminate\Support\Facades\Http')) {
+            throw new Exception('The Laravel HTTP client must be included in order to use the "laravel_http" handler.');
+        }
+
+        if ($handler instanceof Illuminate\Support\Facades\Http) {
+            return new FacebookLaravelHttpClient($handler);
+        }
+
+        if ('laravel_http' === $handler) {
+            return new FacebookLaravelHttpClient();
+        }
+
+        throw new InvalidArgumentException('The http client handler must be set to "curl", "stream", "guzzle", "laravel_http" be an instance of GuzzleHttp\Client or Illuminate\Support\Facades\Http or an instance of Facebook\HttpClients\FacebookHttpClientInterface');
     }
 
     /**
@@ -92,6 +104,10 @@ class HttpClientsFactory
 
         if (class_exists('GuzzleHttp\Client')) {
             return new FacebookGuzzleHttpClient();
+        }
+
+        if (class_exists('Illuminate\Support\Facades\Http')) {
+            return new FacebookLaravelHttpClient();
         }
 
         return new FacebookStreamHttpClient();
